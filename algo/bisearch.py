@@ -1,9 +1,14 @@
 from math import floor
 
+# TODO добавить проверки (вызов ошибки): на индексируемость, отсортированность массива или отсутствие элемента, ...
+# TODO ...несравнимость элементов
+
 
 def binary_search(array, element, is_number_of_operations_needed=False):
+
     lower_border = 0
     upper_border = len(array) - 1
+
     while lower_border <= upper_border:
         middle = lower_border + floor((upper_border - lower_border) / 2)
         if array[middle] == element:
