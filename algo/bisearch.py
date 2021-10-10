@@ -1,21 +1,25 @@
 from math import floor
 
-# TODO добавить проверки (вызов ошибки): на индексируемость, отсортированность массива или отсутствие элемента, ...
-# TODO ...несравнимость элементов
 
-
-def binary_search(array, element, is_number_of_operations_needed=False):
-
-    lower_border = 0
-    upper_border = len(array) - 1
+def binary_search(indexing_data_structure, element, is_number_of_operations_needed=False):
+    try:
+        lower_border = 0
+        upper_border = len(indexing_data_structure) - 1
+    except TypeError:
+        return None
 
     while lower_border <= upper_border:
         middle = lower_border + floor((upper_border - lower_border) / 2)
-        if array[middle] == element:
-            return middle
-        elif array[middle] < element:
-            lower_border = middle + 1
-        else:
-            upper_border = middle - 1
+        try:
+            if indexing_data_structure[middle] == element:
+                return middle
+            elif indexing_data_structure[middle] < element:
+                lower_border = middle + 1
+            else:
+                upper_border = middle - 1
+        except TypeError:
+            return None
 
 
+if __name__ == '__main__':
+    pass
