@@ -1,7 +1,7 @@
 import unittest
 from math import ceil, log2
 
-from algo.bisearch import binary_search
+from algo.bisearch import binary_search, recursive_binary_search
 
 
 class TestBinarySearch(unittest.TestCase):
@@ -27,7 +27,7 @@ class TestBinarySearch(unittest.TestCase):
         self.assertEqual(self.SEARCH_INDEX_FOR_ARRAY, result)
 
     def test_with_tuple(self):
-        result = binary_search(self.TEST_TUPLE, self.SEARCH_WORD_FOR_TUPLE)
+        result = recursive_binary_search(self.TEST_TUPLE, self.SEARCH_WORD_FOR_TUPLE)
         self.assertEqual(self.SEARCH_INDEX_FOR_TUPLE, result)
 
     def test_operations_interval(self):
