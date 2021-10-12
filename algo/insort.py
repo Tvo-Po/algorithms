@@ -28,7 +28,6 @@ def insert_sort(array, reverse=False, is_number_of_operations_needed=False):
     total_operations = 0
     counter = 0
     for i in range(ARRAY_LENGTH):
-        print(counter)
         total_operations += counter
         if reverse:
             insert_element_index, counter = find_biggest(array)

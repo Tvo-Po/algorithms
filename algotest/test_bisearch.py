@@ -1,10 +1,10 @@
-import unittest
+from unittest import TestCase
 from math import ceil, log2
 
 from algo.bisearch import binary_search, recursive_binary_search
 
 
-class TestBinarySearch(unittest.TestCase):
+class TestBinarySearch(TestCase):
 
     TEST_ARRAY = ['apple', 'go', 'grass', 'loser', 'newbie',
                   'opponent', 'protect', 'punishment', 'test',
