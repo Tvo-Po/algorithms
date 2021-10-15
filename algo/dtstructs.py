@@ -1,67 +1,104 @@
-class NodeAlreadyExists(Exception):
-    pass
+class Connection:
+    """
+    Representation of connections between graphs.
+    """
+
+    class ConnectionError(Exception):
+        pass
+
+    def __init__(self, first_node, second_node, is_orient: bool = False):
+        """
+        Connect first node with second node.
+        If orient, connection goes from first to second.
+        """
+        if isinstance(first_node, Node) and isinstance(second_node, Node):
+            self.__first_end = first_node
+            self.__second_end = second_node
+            if is_orient:
+                self.__orient_to = second_node
+        else:
+            raise ValueError('Ends of connection must be nodes')
+
+    def remove_connection(self):
+        """
+        Remove connection between current nodes.
+        """
+        if self.__first_end and self.__second_end:
+            self.__first_end = None
+            self.__second_end = None
+            self.__orient_to = None
+            raise self.ConnectionError('You\'re trying to remove empty connection')
+        else:
+            self.__first_end = None
+            self.__second_end = None
+            self.__orient_to = None
+
+    def reset_connection(self, first_node, second_node, is_orient: bool = False):
+        """
+        Reuse empty connection to connect first node with second node.
+        If orient, connection goes from first to second.
+        If connection not empty, raise error.
+        """
+        if self.__first_end or self.__second_end:
+            raise self.ConnectionError('Connection already exists')
+        if isinstance(first_node, Node) and isinstance(second_node, Node):
+            self.__first_end = first_node
+            self.__second_end = second_node
+            if is_orient:
+                self.__orient_to = second_node
+        else:
+            raise ValueError('Ends of connection must be nodes')
+
+    def move_to_next(self, node):
+        if not self.__orient_to:
+            if node == self.__first_end:
+                return self.__second_end
+            elif node == self.__second_end:
+                return self.__first_end
+            else:
+                raise self.ConnectionError('Given node doesn\'t belong to this connection')
+        else:
+            if node == self.__first_end:
+                return self.__second_end
+            elif node == self.__second_end:
+                raise self.ConnectionError('Given node hasn\'t way back')
+            else:
+                raise self.ConnectionError('Given node doesn\'t belong to this connection')
+
+    def __str__(self):
+        if self.__orient_to:
+            return self.__first_end.name + ' -> ' + self.__second_end.name
+        else:
+            return self.__first_end.name + ' - ' + self.__second_end.name
 
 
 class Node:
     """
-    Representation of oriented graph Nodes
-    :param self.name: The name of Node
-    :param self.__connections: The dict of Nodes to which current connected
+    Representation of graph Nodes.
+    :param self.name: The name of Node.
     """
 
-    def __init__(self, name: str, connections: dict = {}):
+    def __init__(self, name: str):
         self.name = name
-        self.__connections = {}
-        for connect in connections:
-            if isinstance(connect, Node):
-                if self.__connections.get(connect):
-                    raise NodeAlreadyExists('Node with this name already exists')
-                else:
-                    self.__connections[connect] = connections[connect]
-            else:
-                raise ValueError('Connections must be Node type')
 
     def __str__(self):
-        node_amount = len(self.__connections)
-        center = node_amount // 2
-        name_length = len(self.name) + 1
-        node_strings = [''] * node_amount
-        for i, node in enumerate(self.__connections):
-            node_strings[i] = ' ' * name_length + '-' + ' ' + node + '\n'
-        node_map = ''
-        if node_amount == 1:
-            node_map = self.name + ' ' + node_strings[0].lstrip()
-        elif node_amount == 0:
-            node_map = self.name
-        elif node_amount % 2 == 0:
-            main_node_lain = self.name + ' ' + '\n'
-            node_map = ''.join(node_strings[:center]) + main_node_lain + ''.join(node_strings[center:])
-        else:
-            node_strings[center] = self.name + ' ' + node_strings[center + 1].lstrip()
-            node_map = ''.join(node_strings)
-        return node_map
-
-    def connect_with(self, other_node):
-        """
-        Connect current Node with other Nodes
-        :return: None
-        """
-        if isinstance(other_node, Node):
-            self.__connections.append(other_node)
-            return Node('TemporaryNamedNode', self.__connections)
-        else:
-            raise ValueError('It\'s not a Node')
-
-    @property
-    def connection_list(self):
-        return self.__connections
+        return self.name
 
 
 class Graph:
 
-    def __init__(self):
-        self.__node_list = []
+    def __init__(self, connections: dict, is_orient=False):
+        self.__connections = {}
+        for node_name in connections.keys():
+            self.__connections[node_name] = (Node(node_name), [])
+        for node_name, node_connections in connections.items():
+            for connected_node in node_connections:
+                if self.__connections.get(connected_node):
+                    self.__connections[node_name][1].append(Connection(self.__connections[node_name],
+                                                                       self.__connections[connected_node], is_orient))
+                else:
+                    raise ValueError('You didn\'t declare this node')
 
 
 if __name__ == '__main__':
-    pass
+    print('Not valid. Reinventing bicycle...')
